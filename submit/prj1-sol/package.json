@@ -1,7 +1,7 @@
 {
   "name": "prj1-sol",
   "version": "1.0.0",
-  "description": "",
+  "description": "Name:\t\tKetaki Khade B-Number:\tB00865658 Email:\t\tkkhade1@binghamton.edu",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/",
@@ -18,5 +18,8 @@
   },
   "dependencies": {
     "cs544-js-utils": "file:../../../cs544/lib/cs544-js-utils"
+  },
+  "directories": {
+    "test": "test"
   }
 }
