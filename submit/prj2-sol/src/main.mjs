@@ -10,7 +10,9 @@ export default async function main() {
     usage();
   }
   const dbUrl = args[0];
+  console.log('dburl',dbUrl);
   const daoResult = await makeFeaturesDao(dbUrl);
+  console.log('daoResult',daoResult);
   if (daoResult.hasErrors) panic(daoResult);
   const dao = daoResult.val;
   try {
