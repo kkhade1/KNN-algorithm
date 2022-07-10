@@ -19,13 +19,13 @@ function auxilaryimage(headerspec,arraybyte){
 	const buffer = new ArrayBuffer(16);
 	const view = new DataView(buffer);
 	for (var k=0; k<16; k++) {
-		view.setInt8(k, arraybyte[k]);
+		view.setUint8(k, arraybyte[k]);
 	}	
 	let j = 0;
 	for (const spec_obj of headerspec){
 		let spec_header_name = spec_obj.name;
 		let spec_header_value = spec_obj.value;
-		let image_header_value = view.getInt32(j);
+		let image_header_value = view.getUint32(j);
 		
 		if (spec_header_value) { 
 			if (spec_header_value !== image_header_value)
@@ -47,13 +47,13 @@ function auxilarylabels(headerspec,arraybyte){
         const buffer = new ArrayBuffer(8);
         const view = new DataView(buffer);
         for (var k=0; k<8; k++) {
-                view.setInt8(k, arraybyte[k]);
+                view.setUint8(k, arraybyte[k]);
         }
         let j = 0;
         for (const spec_obj of headerspec){
                 let spec_label_header_name = spec_obj.name;
 		let spec_label_header_value = spec_obj.value;
-		let label_header_value = view.getInt32(j);
+		let label_header_value = view.getUint32(j);
 		
                 if (spec_label_header_value) {
                         if (spec_label_header_value !== label_header_value)

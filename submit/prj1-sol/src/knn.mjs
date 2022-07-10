@@ -54,10 +54,10 @@ function calculate_distance(trainfeatures,testfeatures) {
 	var sum = 0;
 	
 	for(let i=0; i< trainfeatures.length; i++) {
-		view.setInt8(0, trainfeatures[i]);
-		view.setInt8(1, testfeatures[i]);
+		view.setUint8(0, trainfeatures[i]);
+		view.setUint8(1, testfeatures[i]);
 		
-		sum += Math.pow((view.getInt8(0) - view.getInt8(1)),2);
+		sum += Math.pow((view.getUint8(0) - view.getUint8(1)),2);
 	}
 	
 	return sum;	
