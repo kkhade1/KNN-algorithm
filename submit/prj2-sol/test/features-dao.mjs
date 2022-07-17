@@ -5,7 +5,7 @@ import { uint8ArrayToB64, b64ToUint8Array } from '../src/uint8array-b64.mjs';
 import chai from 'chai';
 const { expect } = chai;
 
-describe.only('features DAO', () => {
+describe('features DAO', () => {
 
   //mocha will run beforeEach() before each test to set up these variables
   let dao;
