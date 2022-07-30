@@ -44,7 +44,10 @@ class DigitImageRecognizer extends HTMLElement {
 
   static get observedAttributes() { return ['ws-url']; }
   attributeChangedCallback(name, _oldValue, newValue) {
-    //TODO
+  	if (newValue!=_oldValue) {
+  		this.setAttribute(name,newValue);
+      		this.init(this.getAttribute('ws-url'));
+       }
   }
 
 
@@ -68,15 +71,22 @@ class DigitImageRecognizer extends HTMLElement {
     ctx.lineJoin = ctx.lineCap = 'round';
     ctx.strokeStyle = FG_COLOR;
     ctx.lineWidth = 1;
-
+ 
     /** set up an event handler for the clear button being clicked */
-    //TODO
+    let elementClear = shadow.getElementById("clear");
+    elementClear.addEventListener('click',()=>{this.resetApp(ctx)},false);
+    
 
     /** set up an event handler for the recognize button being clicked. */
-    //TODO
+    let elementRecognizer = shadow.getElementById("recognize");
+    elementRecognizer.addEventListener('click',()=>{this.recognize(ctx)},false);
+    
 
     /** set up an event handler for the pen-width being changed. */
-    //TODO
+    let elementPenWidth = shadow.getElementById("pen-width");
+    elementPenWidth.addEventListener('change',(event)=>{
+    	ctx.lineWidth = event.target.value;
+    });
 
     /** true if the mouse button is currently pressed within the canvas */
     let mouseDown = false;
@@ -90,34 +100,63 @@ class DigitImageRecognizer extends HTMLElement {
     /** set up an event handler for the mouse button being pressed within
      *  the canvas.
      */
-    //TODO
+
+    canvas.addEventListener('mousedown',(event)=> {
+    					let result = eventCanvasCoord(canvas,event); 			
+    					last.x = result.x;
+    					last.y = result.y;
+    					mouseDown = true;}, false);
+    
 
     
     /** set up an event handler for the mouse button being moved within
      *  the canvas.  
      */
-    //TODO
+     canvas.addEventListener('mousemove',(event)=>{
+     				         let next = eventCanvasCoord(canvas,event);
+     						  if (mouseDown){
+     						 	draw(ctx, last, next);
+     						 	last.x = next.x;
+     						        last.y = next.y; }
+                                          },false);
+   
 
     /** set up an event handler for the mouse button being released within
      *  the canvas.
      */
-    //TODO
+     
+    canvas.addEventListener('mouseup',(event)=>{
+     				      let up = eventCanvasCoord(canvas,event);	
+     			              mouseDown = false;
+     				      last.x = up.x;
+     				      last.y = up.y;
+     				      },false);
+    
 
     /** set up an event handler for the mouse button being moved off
      *  the canvas.
      */
-    //TODO
+     canvas.addEventListener('mouseleave',(event)=>{
+     	 canvas.addEventListener('mouseup',(event)=>{
+     				           let up = eventCanvasCoord(canvas,event);
+     				           mouseDown = false;
+     				           last.x = up.x;
+     				           last.y = up.y;
+    				         },false);
+     						  },false);
+    
 
     /** Create a new KnnWsClient instance in this */
-    //TODO
-
+    this.knnWsClient = makeKnnWsClient(wsUrl);
   }
 
   /** Clear canvas specified by graphics context ctx and any
    *  previously determined label 
    */
-  resetApp(ctx)  {
-    console.log('TODO resetApp()');
+  resetApp(ctx){
+    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+    this.shadowRoot.querySelector('#knn-label').innerHTML = '';
+    this.shadowRoot.querySelector('#errors').innerHTML = '';
   }
 
   /** Label the image in the canvas specified by canvas corresponding
@@ -126,7 +165,14 @@ class DigitImageRecognizer extends HTMLElement {
    *  area of the app.  Display any errors encountered.
    */
   async recognize(ctx) {
-    console.log('TODO recognize()');
+    let base64Image = canvasToMnistB64(ctx);
+    const result = await this.knnWsClient.classify(base64Image);
+    if (result.hasErrors){
+    	this.reportErrors(result);
+    }
+    const label = result.label;
+    const id = result.id;
+    this.shadowRoot.querySelector('#knn-label').innerHTML = label;
   }
 
   /** given a result for which hasErrors is true, report all errors 
@@ -137,14 +183,16 @@ class DigitImageRecognizer extends HTMLElement {
       errResult.errors.map(e => `<li>${e.message}</li>`).join('\n');
     this.shadowRoot.querySelector('#errors').innerHTML = html;
   }
-	
-
 }
 
 /** Draw a line from {x, y} point pt0 to {x, y} point pt1 in ctx */
 function draw(ctx, pt0, pt1) {
-  //TODO
+  ctx.beginPath();
+  ctx.moveTo(pt0.x,pt0.y);
+  ctx.lineTo(pt1.x,pt1.y);
+  ctx.stroke();
 }
+
 	
 /** Returns the {x, y} coordinates of event ev relative to canvas in
  *  logical canvas coordinates.
