@@ -16,7 +16,7 @@ export default function App(props) {
   <form classname="App">
   	<label>Knn Webservice URL</label>
   	<input type="text" size="40" value={DEFAULT_WS_URL}/>
-  	<Canvas></Canvas><br></br>
+  	<Canvas>draw(ctx,4,10)</Canvas><br></br>
   	<button onClick={this.handleResetClick}>reset</button>
   	<button onClick={this.handleResetClick}>classify</button>
   	<select>
