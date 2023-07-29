@@ -1,2 +1,2 @@
-# i544
+# implementation of Optical character recognition using KNN Algorithm 
 WebProgramming
