@@ -1,2 +1,2 @@
-# implementation of Optical Character Recognition System using KNN Algorithm 
+## implementation of Optical Character Recognition System using KNN Algorithm 
 WebProgramming
